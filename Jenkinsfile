@@ -1,15 +1,14 @@
 pipeline {
-  agent any
-  stages {
-    stage('Build in Docker') {
-      steps {
-        sh '''
-          docker run --rm -v "$PWD":/workspace -w /workspace alpine \
-            sh -c 'echo Pipeline is working! && ls -la'
-        '''
-      }
+    agent {
+        docker { image 'node:22.20.0-alpine3.22' }
     }
-  }
+    stages {
+        stage('Test') {
+            steps {
+                sh 'node --eval "console.log(process.arch,process.platform)"'
+            }
+        }
+    }
 }
 
 
