@@ -1,17 +1,22 @@
 pipeline {
-  agent any
-  stages {
-    stage('Test') {
-      steps {
-        sh '''
-          docker run --rm \
-            -v "$PWD":/work -w /work \
-            node:22.20.0-alpine3.22 \
-            node --eval "console.log(process.arch, process.platform)"
-        '''
-      }
+    agent {
+        label '!windows'
     }
-  }
+
+    environment {
+        DISABLE_AUTH = 'true'
+        DB_ENGINE    = 'sqlite'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo "Database engine is ${DB_ENGINE}"
+                echo "DISABLE_AUTH is ${DISABLE_AUTH}"
+                sh 'printenv'
+            }
+        }
+    }
 }
 
 
